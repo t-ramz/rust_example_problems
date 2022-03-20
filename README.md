@@ -2,7 +2,7 @@
 My personal solutions to example problems in the book "THE RUST PROGRAMMING LANGUAGE"
 
 "The Rust Programming Language", Steve Klabnik and Carol Nichols, can be found at
-["https://nostarch.com/Rust2018"](https://nostarch.com/Rust2018)
+[https://nostarch.com/Rust2018](https://nostarch.com/Rust2018)
 
 ## Getting Started
 Clone the repo
