@@ -31,9 +31,7 @@ impl <T,U,V> Cacher<T, U, V>
     }
 }
 
-// Limitations of Cacher Implementation
 
-// cacher will only store first value calculated. will not be sensitive to args
 #[test]
 fn cache_u32_with_different_values() {
     let mut c = Cacher::new(|a| a);
