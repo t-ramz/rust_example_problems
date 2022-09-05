@@ -33,7 +33,7 @@ impl <T,U> Cacher<T,U>
 
 // cacher will only store first value calculated. will not be sensitive to args
 #[test]
-fn cache_with_different_values() {
+fn cache_u32_with_different_values() {
     let mut c = Cacher::new(|a| a);
 
     let v1 = c.value(1);
@@ -42,4 +42,15 @@ fn cache_with_different_values() {
 
     assert_eq!(v2, 2);
     assert_eq!(v1, v3);
+}
+
+#[test]
+fn cache_str_with_different_values() {
+    let mut c = Cacher::new(|string| string);
+
+    let val1 = c.value("hello");
+    let val2 = c.value("world");
+
+    assert_eq!(val1, "hello");
+    assert_eq!(val2, "world");
 }
