@@ -1,29 +1,29 @@
 fn main() {
 }
 
-
+use std::hash::Hash;
 use std::collections::HashMap;
 // caching struct for closure
-struct Cacher<T>
-    where T: Fn(u32) -> u32     // to create a struct for a closure, we must know its type
-                                // each closure has its own anonymous type
-                                // the Fn trait tells us that what is passed must be a function
+struct Cacher<T, U>
+    where T: Fn(U) -> U, // assume return self
+        U: PartialOrd + Eq + Hash + Copy
 {
     calculation: T,
-    value_map: HashMap<u32, u32>,
+    value_map: HashMap<U, U>,
 }
 
-impl <T> Cacher<T>
-    where T: Fn(u32) -> u32
+impl <T,U> Cacher<T,U>
+    where T: Fn(U) -> U,
+          U: PartialOrd + Eq + Hash + Copy
 {
-    fn new(calculation: T) -> Cacher<T> {
+    fn new(calculation: T) -> Cacher<T,U> {
         Cacher {
             calculation,
             value_map: HashMap::new(),
         }
     }
 
-    fn value(&mut self, arg: u32) -> u32 {
+    fn value(&mut self, arg: U) -> U {
         let value = self.value_map.entry(arg).or_insert((self.calculation)(arg));
         *value
     }
@@ -41,4 +41,5 @@ fn cache_with_different_values() {
     let v3 = c.value(1);
 
     assert_eq!(v2, 2);
+    assert_eq!(v1, v3);
 }
