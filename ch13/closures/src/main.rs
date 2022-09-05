@@ -1,11 +1,8 @@
-use std::thread;
-use std::time::Duration;
-
 fn main() {
 }
 
 
-
+use std::collections::HashMap;
 // caching struct for closure
 struct Cacher<T>
     where T: Fn(u32) -> u32     // to create a struct for a closure, we must know its type
@@ -13,7 +10,7 @@ struct Cacher<T>
                                 // the Fn trait tells us that what is passed must be a function
 {
     calculation: T,
-    value: Option<u32>,
+    value_map: HashMap<u32, u32>,
 }
 
 impl <T> Cacher<T>
@@ -22,19 +19,13 @@ impl <T> Cacher<T>
     fn new(calculation: T) -> Cacher<T> {
         Cacher {
             calculation,
-            value: None,
+            value_map: HashMap::new(),
         }
     }
 
     fn value(&mut self, arg: u32) -> u32 {
-        match self.value {
-            Some(v) => v,
-            None => {
-                let v = (self.calculation)(arg);
-                self.value = Some(v);
-                v
-            }
-        }
+        let value = self.value_map.entry(arg).or_insert((self.calculation)(arg));
+        *value
     }
 }
 
@@ -47,6 +38,7 @@ fn cache_with_different_values() {
 
     let v1 = c.value(1);
     let v2 = c.value(2);
+    let v3 = c.value(1);
 
     assert_eq!(v2, 2);
 }
