@@ -4,26 +4,28 @@ fn main() {
 use std::hash::Hash;
 use std::collections::HashMap;
 // caching struct for closure
-struct Cacher<T, U>
-    where T: Fn(U) -> U, // assume return self
-        U: PartialOrd + Eq + Hash + Copy
+struct Cacher<T, U, V>
+    where T: Fn(U) -> V,
+        U: PartialOrd + Eq + Hash + Copy,
+        V: Copy
 {
     calculation: T,
-    value_map: HashMap<U, U>,
+    value_map: HashMap<U, V>,
 }
 
-impl <T,U> Cacher<T,U>
-    where T: Fn(U) -> U,
-          U: PartialOrd + Eq + Hash + Copy
+impl <T,U,V> Cacher<T, U, V>
+    where T: Fn(U) -> V,
+          U: PartialOrd + Eq + Hash + Copy,
+          V: Copy
 {
-    fn new(calculation: T) -> Cacher<T,U> {
+    fn new(calculation: T) -> Cacher<T,U,V> {
         Cacher {
             calculation,
             value_map: HashMap::new(),
         }
     }
 
-    fn value(&mut self, arg: U) -> U {
+    fn value(&mut self, arg: U) -> V {
         let value = self.value_map.entry(arg).or_insert((self.calculation)(arg));
         *value
     }
@@ -46,11 +48,11 @@ fn cache_u32_with_different_values() {
 
 #[test]
 fn cache_str_with_different_values() {
-    let mut c = Cacher::new(|string| string);
+    let mut c = Cacher::new(|string: &str| string.len());
 
     let val1 = c.value("hello");
     let val2 = c.value("world");
 
-    assert_eq!(val1, "hello");
-    assert_eq!(val2, "world");
+    assert_eq!(val1, 5);
+    assert_eq!(val2, 5);
 }
